@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "start": "NODE_PATH=./build node build/index.js",
     "build": "tsc -p .",
