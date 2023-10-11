@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node ./build/index",
-    "build": "rimraf ./build && tsc",
+    "start": "NODE_PATH=./build node build/index.js",
+    "build": "tsc -p .",
     "dev": "ts-node-dev ./src/index.ts",
     "test": "jest"
   },
