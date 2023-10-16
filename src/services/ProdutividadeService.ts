@@ -60,9 +60,7 @@ export class ProdutividadeService {
       result = await new AgritecService().getProdutividade(payload)
     }
 
-    return {
-      [id]: result,
-    }
+    return String(`"${this.simulacao.feature.id}": ${result}`)
   }
 
   public async calculate(simulacao: ISimulacao) {

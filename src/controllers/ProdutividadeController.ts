@@ -38,6 +38,38 @@ export class ProdutividadeController {
 
         const produtividade = await this.produtividadeService.calculate(simulacao)
 
-        return response.status(200).json(produtividade)
+        return response.status(200).send(produtividade)
+    }
+
+    public async calculateAll(request: Request, response: Response): Promise<Response> {
+        console.time("total time")
+        const geojson = request.body
+
+        const simulations = geojson.features.map((feat: IFeature) => {
+            return {
+                id: feat.id,
+                cultura: geojson.properties.cultura,
+                municipio: geojson.properties.cod_municipio,
+                feature: feat
+            }
+        })
+        const responses = await Promise.all(geojson.features.map(async (feat: IFeature) => {
+            const simulacao: ISimulacao = {
+                id: feat.id,
+                cultura: geojson.properties.cultura,
+                municipio: geojson.properties.cod_municipio,
+                feature: feat
+            }
+
+            console.log(feat)
+
+            const result = await this.produtividadeService.calculate(simulacao)
+            return result
+        }))
+
+        console.log(responses)
+        console.timeEnd("total time")
+
+        return response.status(200).json(geojson)
     }
 }
