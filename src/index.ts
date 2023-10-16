@@ -14,19 +14,20 @@ app.use(express.json());
 
 // * set headers
 app.use((request, response, next) => {
-    response.setHeader("Access-Control-Allow-Origin", "*");
-    response.setHeader(
-      "Access-Control-Allow-Methods",
-      "GET, POST, PUT, DELETE, OPTIONS, PATCH"
-    );
-    next();
+  response.setHeader("Content-Type", "application/json")
+  response.setHeader("Access-Control-Allow-Origin", "*");
+  response.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS, PATCH"
+  );
+  next();
 })
 
 // * use cors
 app.use(cors({
-      origin: "*",
-      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-    })
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+})
 );
 
 // * app listen
