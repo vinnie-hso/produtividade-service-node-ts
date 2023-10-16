@@ -68,7 +68,7 @@ export class ProdutividadeController {
               }
         })
 
-        res = `"produtividade:"` + JSON.stringify(res.produtividade)
+        res = `"produtividade":` + JSON.stringify(res.produtividade)
 
         console.timeEnd("total time")
         console.log(res)
