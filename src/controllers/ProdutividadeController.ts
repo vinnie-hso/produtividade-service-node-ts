@@ -53,23 +53,25 @@ export class ProdutividadeController {
                 feature: feat
             }
         })
-        const responses = await Promise.all(geojson.features.map(async (feat: IFeature) => {
-            const simulacao: ISimulacao = {
-                id: feat.id,
-                cultura: geojson.properties.cultura,
-                municipio: geojson.properties.cod_municipio,
-                feature: feat
-            }
-
-            console.log(feat)
-
-            const result = await this.produtividadeService.calculate(simulacao)
+        const responses = await Promise.all(simulations.map(async (simulation: ISimulacao) => {
+            const result = await this.produtividadeService.calculate(simulation)
             return result
         }))
 
-        console.log(responses)
+        let res: any = {
+            "produtividade": {}
+        }
+
+        responses.forEach((el) => {
+            for (const [key, value] of Object.entries(el)) {
+                res.produtividade[key] = value
+              }
+        })
+
+        res = "produtividade:" + JSON.stringify(res.produtividade)
+
         console.timeEnd("total time")
 
-        return response.status(200).json(geojson)
+        return response.status(200).send(res)
     }
 }

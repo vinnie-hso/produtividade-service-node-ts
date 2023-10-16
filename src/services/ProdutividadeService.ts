@@ -21,8 +21,6 @@ export class ProdutividadeService {
     return safrasPassadas.length > 0
   }
 
-  private async getEstimativa() { }
-
   private async getMediaIBGE5Anos() {
     const { municipio, cultura } = this.simulacao
     let result = await new RedimentoMuncipioService().getRendimento5AnosByMunicipio(municipio, cultura)
@@ -60,7 +58,10 @@ export class ProdutividadeService {
       result = await new AgritecService().getProdutividade(payload)
     }
 
-    return String(`"${this.simulacao.feature.id}": ${result}`)
+    // return String(`"${this.simulacao.feature.id}": ${result}`)
+    return {
+      [id]: result
+    }
   }
 
   public async calculate(simulacao: ISimulacao) {
