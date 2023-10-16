@@ -14,4 +14,4 @@ ENV NODE_PATH=./build
 
 RUN npm run build
 
-CMD [ "npm", "start" ]
+CMD [ "npm", "run", "dev" ]
