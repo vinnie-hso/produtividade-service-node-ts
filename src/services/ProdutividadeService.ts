@@ -27,10 +27,14 @@ export class ProdutividadeService {
     return result
   }
 
-  private async getProdutividadeHistorica() {
+  private async getProdutividadeHistorica(simulacao: ISimulacao) {
 
-    const { id, cultura } = this.simulacao
-    const geometry: IGeometry = this.simulacao.feature.geometry
+    // console.log("Simulacao: ", this.simulacao)
+    // const { id, cultura } = this.simulacao
+    // const geometry: IGeometry = this.simulacao.feature.geometry
+
+    const { id, cultura } = simulacao
+    const geometry: IGeometry = simulacao.feature.geometry
 
     // pegar centroid da geometria (eixo x e y) 
     const centroid: ICentroid = new GeometryUtils().getCentroid(geometry)
@@ -43,12 +47,14 @@ export class ProdutividadeService {
     if (!this.hasSafrasPassadas()) result = this.getMediaIBGE5Anos()
     else {
 
-      const { municipio, cultura } = this.simulacao
+      // const { municipio, cultura } = this.simulacao
+      const { municipio, cultura } = simulacao
       const rendimentoMunicipio = await new RedimentoMuncipioService().getRendimento10AnosByMunicipio(municipio, cultura, this.anosSafras)
 
       // * calcular produtividade pela agritec (requisições assíncronas)
       const payload: IAgritecPayload = {
-        simulacao: this.simulacao,
+        // simulacao: this.simulacao,
+        simulacao: simulacao,
         cad: cadByCentroid.cadValue,
         centroid: centroid,
         cultura: cultura,
@@ -56,6 +62,7 @@ export class ProdutividadeService {
       }
 
       result = await new AgritecService().getProdutividade(payload)
+      // console.log(payload, result)
     }
 
     // return String(`"${this.simulacao.feature.id}": ${result}`)
@@ -66,8 +73,8 @@ export class ProdutividadeService {
 
   public async calculate(simulacao: ISimulacao) {
     try {
-      this.simulacao = simulacao
-      return await this.getProdutividadeHistorica()
+      // this.simulacao = simulacao
+      return await this.getProdutividadeHistorica(simulacao)
     } catch (error) {
       console.log(`Produtividade Service Calculate error: ${error}`)
     }

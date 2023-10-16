@@ -53,6 +53,7 @@ export class ProdutividadeController {
                 feature: feat
             }
         })
+
         const responses = await Promise.all(simulations.map(async (simulation: ISimulacao) => {
             const result = await this.produtividadeService.calculate(simulation)
             return result
