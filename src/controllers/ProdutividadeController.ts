@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, response } from "express";
 
 import { IFeature, ISimulacao } from "../ts";
 
@@ -11,6 +11,22 @@ export class ProdutividadeController {
 
     constructor(produtividadeService = new ProdutividadeService()) {
         this.produtividadeService = produtividadeService;
+    }
+
+    private mountResponseData(responses: any[]): any {
+        let responseData: any = {
+            "produtividade": {}
+        }
+
+        responses.forEach((el) => {
+            for (const [key, value] of Object.entries(el)) {
+                responseData.produtividade[key] = value
+            }
+        })
+
+        responseData = `"produtividade":` + JSON.stringify(responseData.produtividade)
+
+        return responseData
     }
 
     public async calcular(request: Request, response: Response): Promise<Response> {
@@ -42,7 +58,6 @@ export class ProdutividadeController {
     }
 
     public async calculateAll(request: Request, response: Response): Promise<Response> {
-        console.time("total time")
         const geojson = request.body
 
         const simulations = geojson.features.map((feat: IFeature) => {
@@ -59,21 +74,7 @@ export class ProdutividadeController {
             return result
         }))
 
-        let res: any = {
-            "produtividade": {}
-        }
-
-        responses.forEach((el) => {
-            for (const [key, value] of Object.entries(el)) {
-                res.produtividade[key] = value
-              }
-        })
-
-        res = `"produtividade":` + JSON.stringify(res.produtividade)
-
-        console.timeEnd("total time")
-        console.log(res)
-
-        return response.status(200).send(res)
+        const responseData = this.mountResponseData(responses)
+        return response.status(200).send(responseData)
     }
 }
