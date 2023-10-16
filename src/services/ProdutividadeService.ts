@@ -66,6 +66,7 @@ export class ProdutividadeService {
     }
 
     // return String(`"${this.simulacao.feature.id}": ${result}`)
+    
     return {
       [id]: result
     }
