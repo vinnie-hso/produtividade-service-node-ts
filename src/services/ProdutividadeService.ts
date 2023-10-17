@@ -17,6 +17,7 @@ export class ProdutividadeService {
 
   private hasSafrasPassadas(simulacao: ISimulacao) {
     const safrasPassadas = simulacao.feature.properties.safras_passadas
+    if (!safrasPassadas) return false
     if (safrasPassadas.length > 0) this.anosSafras = safrasPassadas.map((el) => el.ano_safra)
     return safrasPassadas.length > 0
   }
