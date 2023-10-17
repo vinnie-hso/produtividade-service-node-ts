@@ -55,11 +55,14 @@ export class RedimentoMuncipioService {
     }
 
     public async getRendimento10AnosByMunicipio(municipio: any, cultura: any, anosSafras: string[]) {
-        let result
-        if (cultura === 'soja') result = await this.getRendimento10AnosSoja(municipio, cultura, anosSafras)
-        else result = await this.getRendimento10AnosMilho(municipio, cultura, anosSafras)
-        
-        return result
+        try {
+            let result
+            if (cultura === 'soja') result = await this.getRendimento10AnosSoja(municipio, cultura, anosSafras)
+            else result = await this.getRendimento10AnosMilho(municipio, cultura, anosSafras)
+            return result
+        } catch (error: any) {
+            throw new Error(`Get Rendimentos 10 Anos by Municipio error: ${error.message}`)
+        }
     }
 
     private async getRendimento10AnosSoja(municipio: string, cultura: string, anosSafras: string[]) {
@@ -76,7 +79,6 @@ export class RedimentoMuncipioService {
         const result = await query.execute()
         return result
     }
-
 
     private async getRendimento10AnosMilho(municipio: string, cultura: string, anosSafras: string[]) {
         const query = this.dataSource.getRepository('MunicipioPam')

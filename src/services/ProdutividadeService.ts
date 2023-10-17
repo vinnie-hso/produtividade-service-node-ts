@@ -22,52 +22,55 @@ export class ProdutividadeService {
   }
 
   private async getMediaIBGE5Anos(simulacao: ISimulacao) {
-    const { municipio, cultura } = simulacao
-    let result = await new RedimentoMuncipioService().getRendimento5AnosByMunicipio(municipio, cultura)
-    return result
+    try {
+      const { municipio, cultura } = simulacao
+      let result = await new RedimentoMuncipioService().getRendimento5AnosByMunicipio(municipio, cultura)
+      return result
+    } catch (error: any) {
+      throw new Error(`Get Media IBGE 5 Anos error: ${error.message}`)
+    }
   }
 
   private async getProdutividadeHistorica(simulacao: ISimulacao) {
+    try {
+      // * calcular media IBGE se não houver safras passadas
+      let result
+      if (!this.hasSafrasPassadas(simulacao)) result = await this.getMediaIBGE5Anos(simulacao)
+      else {
 
-    const { id, cultura } = simulacao
-    const geometry: IGeometry = simulacao.feature.geometry
+        const { cultura, municipio } = simulacao
+        const geometry: IGeometry = simulacao.feature.geometry
 
-    // pegar centroid da geometria (eixo x e y) 
-    const centroid: ICentroid = new GeometryUtils().getCentroid(geometry)
+        const centroid: ICentroid = new GeometryUtils().getCentroid(geometry)
 
-    // buscar dados de CAD a informando a cultura
-    const cadByCentroid: any = await new PronasolosService().getCADByCentroid(cultura, centroid)
+        const cadByCentroid: any = await new PronasolosService().getCADByCentroid(cultura, centroid)
 
-    // * calcular media IBGE se não houver safras passadas
-    let result
-    if (!this.hasSafrasPassadas(simulacao)) result = this.getMediaIBGE5Anos(simulacao)
-    else {
-      const { municipio, cultura } = simulacao
+        const rendimentoMunicipio = await new RedimentoMuncipioService().getRendimento10AnosByMunicipio(municipio, cultura, this.anosSafras)
 
-      const rendimentoMunicipio = await new RedimentoMuncipioService().getRendimento10AnosByMunicipio(municipio, cultura, this.anosSafras)
+        // * calcular produtividade pela agritec (requisições assíncronas)
+        const payload: IAgritecPayload = {
+          simulacao: simulacao,
+          cad: cadByCentroid.cadValue,
+          centroid: centroid,
+          cultura: cultura,
+          expectativaProdutividade: rendimentoMunicipio,
+        }
 
-      // * calcular produtividade pela agritec (requisições assíncronas)
-      const payload: IAgritecPayload = {
-        simulacao: simulacao,
-        cad: cadByCentroid.cadValue,
-        centroid: centroid,
-        cultura: cultura,
-        expectativaProdutividade: rendimentoMunicipio,
+        result = await new AgritecService().getProdutividade(payload)
       }
 
-      result = await new AgritecService().getProdutividade(payload)
-    }
-
-    return {
-      [id]: result
+      return {
+        [simulacao.id]: result
+      }
+    } catch (error: any) {
+      console.log(`Get Produtividade Histórica error: ${error.message}`)
+      return {
+        [simulacao.id]: error.message
+      }
     }
   }
 
   public async calculate(simulacao: ISimulacao) {
-    try {
-      return await this.getProdutividadeHistorica(simulacao)
-    } catch (error) {
-      console.log(`Produtividade Service Calculate error: ${error}`)
-    }
+    return await this.getProdutividadeHistorica(simulacao)
   }
 }

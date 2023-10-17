@@ -36,7 +36,6 @@ export class AgritecService {
 
     public async getProdutividade(payload: IAgritecPayload) {
         try {
-
             const url = process.env.AGRITEC_URL
             const safrasPassadas = payload.simulacao.feature.properties.safras_passadas
 
@@ -66,8 +65,8 @@ export class AgritecService {
 
             const produtividadeMedia = this.calculateProdutividadeMedia(responses)
             return produtividadeMedia
-        } catch (error) {
-            console.error(error)
+        } catch (error: any) {
+            throw new Error(`Get Produtividade Agritec error: ${error.message}`)
         }
     }
 

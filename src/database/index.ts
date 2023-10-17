@@ -20,7 +20,7 @@ const dataSource: DataSource = new DataSource({
 dataSource
   .initialize()
   .then(() => {
-    console.log("Data Source inicializado!");
+    console.log("Data Source inicializado");
   })
   .catch((e) => {
     console.error("Erro na inicialização do Data Source:", e);

@@ -14,6 +14,7 @@ export class ProdutividadeController {
     }
 
     private mountResponseData(responses: any[]): any {
+        // console.log("Mount response data: ", responses)
         let responseData: any = {
             "produtividade": {}
         }
@@ -24,8 +25,10 @@ export class ProdutividadeController {
             }
         })
 
-        responseData = `"produtividade":` + JSON.stringify(responseData.produtividade)
+        // * string
+        // responseData = `"produtividade":` + JSON.stringify(responseData.produtividade)
 
+        // * json
         return responseData
     }
 
@@ -58,23 +61,27 @@ export class ProdutividadeController {
     }
 
     public async calculateAll(request: Request, response: Response): Promise<Response> {
-        const geojson = request.body
+        try {
+            const geojson = request.body
 
-        const simulations = geojson.features.map((feat: IFeature) => {
-            return {
-                id: feat.id,
-                cultura: geojson.properties.cultura,
-                municipio: geojson.properties.cod_municipio,
-                feature: feat
-            }
-        })
+            const simulations = geojson.features.map((feat: IFeature) => {
+                return {
+                    id: feat.id,
+                    cultura: geojson.properties.cultura,
+                    municipio: geojson.properties.cod_municipio,
+                    feature: feat
+                }
+            })
 
-        const responses = await Promise.all(simulations.map(async (simulation: ISimulacao) => {
-            const result = await this.produtividadeService.calculate(simulation)
-            return result
-        }))
+            const responses = await Promise.all(simulations.map(async (simulation: ISimulacao) => {
+                const result = await this.produtividadeService.calculate(simulation)
+                return result
+            }))
 
-        const responseData = this.mountResponseData(responses)
-        return response.status(200).send(responseData)
+            const responseData = this.mountResponseData(responses)
+            return response.status(200).send(responseData)
+        } catch (error) {
+            return response.status(400).send(String(error))
+        }
     }
 }

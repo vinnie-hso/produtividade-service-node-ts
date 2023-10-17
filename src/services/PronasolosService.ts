@@ -10,14 +10,17 @@ export class PronasolosService {
     }
 
     public async getCADByCentroid(cultura: any, centroid: ICentroid) {
+        try {
+            const columnCad = this.getColumnCAD(cultura)
+            const query = this.dataSource.getRepository("SoloPronasolos").createQueryBuilder()
+                .select(`SoloPronasolos.${columnCad}`, "cadValue")
+                .where(`ST_Intersects(ST_GeomFromText('POINT (${centroid.x} ${centroid.y})', 4326), spr_sp_pl)`)
 
-        const columnCad = this.getColumnCAD(cultura)
-        const query = this.dataSource.getRepository("SoloPronasolos").createQueryBuilder()
-            .select(`SoloPronasolos.${columnCad}`, "cadValue")
-            .where(`ST_Intersects(ST_GeomFromText('POINT (${centroid.x} ${centroid.y})', 4326), spr_sp_pl)`)
-
-        const result = await query.execute()
-        return result[0];
+            const result = await query.execute()
+            return result[0];
+        } catch (error: any) {
+            throw new Error(`Get CAD by centroid error: ${error.message}`)
+        }
     }
 
     private getColumnCAD(cultura: string) {
