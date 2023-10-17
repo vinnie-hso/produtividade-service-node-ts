@@ -31,6 +31,6 @@ app.use(cors({
 );
 
 // * app listen
-app.listen(PORT, () => console.log(`API rodando na porta ${PORT}`));
+app.listen(PORT, () => console.log(`Serviço PreSeg - Produtividade rodando na porta ${PORT}`));
 
 app.use(routes);
