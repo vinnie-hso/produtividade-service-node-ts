@@ -1,5 +1,7 @@
 import { GeometryUtils } from "./GeometryUtils";
+import { HealthcheckUtils } from "./HealthcheckUtils";
 
 export {
-    GeometryUtils
+    GeometryUtils,
+    HealthcheckUtils
 }

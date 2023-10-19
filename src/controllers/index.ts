@@ -1,3 +1,7 @@
 import { ProdutividadeController } from "./ProdutividadeController";
+import { HealthcheckController } from "./HealthcheckController";
 
-export { ProdutividadeController }
+export {
+    ProdutividadeController,
+    HealthcheckController
+}
