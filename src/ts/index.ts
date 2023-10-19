@@ -5,6 +5,7 @@ import { IGeometry } from "./IGeometry"
 import { ISafraPassada } from "./ISafraPassada"
 import { ICentroid } from "./ICentroid"
 import { IAgritecPayload } from "./IAgritecPayload"
+import { IIntegridade } from "./IIntegridade"
 
 export {
     ISimulacao,
@@ -13,5 +14,6 @@ export {
     IGeometry,
     ISafraPassada, 
     ICentroid,
-    IAgritecPayload
+    IAgritecPayload,
+    IIntegridade
 }

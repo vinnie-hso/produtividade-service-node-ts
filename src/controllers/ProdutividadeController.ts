@@ -4,13 +4,18 @@ import { IFeature, ISimulacao } from "../ts";
 
 // TODO: ProdutividadeService
 import { ProdutividadeService } from "../services/ProdutividadeService";
-
+import { IntegridadeService } from "../services/IntegridadeService";
 
 export class ProdutividadeController {
     produtividadeService: ProdutividadeService;
+    integridadeService: IntegridadeService
 
-    constructor(produtividadeService = new ProdutividadeService()) {
+    constructor(
+        produtividadeService = new ProdutividadeService(),
+        integridadeService = new IntegridadeService()
+    ) {
         this.produtividadeService = produtividadeService;
+        this.integridadeService = integridadeService
     }
 
     private mountResponseData(responses: any[]): any {
@@ -52,7 +57,11 @@ export class ProdutividadeController {
             id: request.headers['simulacao.id'],
             cultura: request.headers['simulacao.cultura'],
             municipio: request.headers['simulacao.municipio'],
-            feature: feature
+            feature: feature,
+            integridade: {
+                isValidGeometry: undefined,
+                validationMessage: undefined
+            }
         }
 
         const produtividade = await this.produtividadeService.calculate(simulacao)
@@ -69,13 +78,26 @@ export class ProdutividadeController {
                     id: feat.id,
                     cultura: geojson.properties.cultura,
                     municipio: geojson.properties.cod_municipio,
-                    feature: feat
+                    feature: feat,
+                    integridade: {
+                        isValidGeometry: true,
+                        validationMessage: undefined
+                    }
                 }
             })
 
-            const responses = await Promise.all(simulations.map(async (simulation: ISimulacao) => {
-                const result = await this.produtividadeService.calculate(simulation)
-                return result
+            // * INTEGRIDADE
+            const validatedSimulations = await Promise.all(simulations.map(async (simulation: ISimulacao) => {
+                return await this.integridadeService.validate(simulation)
+            }))
+
+            // * PRODUTIVIDADE
+            const responses = await Promise.all(validatedSimulations.map(async (simulation: ISimulacao) => {
+
+                if (simulation.integridade.isValidGeometry) return await this.produtividadeService.calculate(simulation)
+                else return {
+                    [simulation.id]: simulation.integridade.validationMessage
+                }
             }))
 
             const responseData = this.mountResponseData(responses)
