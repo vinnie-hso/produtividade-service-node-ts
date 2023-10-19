@@ -1,19 +1,15 @@
 import { DataSource } from "typeorm";
 import { ICentroid, IGeometry, ISimulacao, IAgritecPayload } from "../ts";
 import { GeometryUtils } from "../utils";
-import dataSource from "../database";
 import { PronasolosService } from "./PronasolosService";
-import { RedimentoMuncipioService } from "./RendimentoMunicipioService";
+import { RendimentoMuncipioService } from "./RendimentoMunicipioService";
 import { AgritecService } from "./AgritecService";
 
 export class ProdutividadeService {
-  dataSource: DataSource;
   simulacao: ISimulacao
   anosSafras: string[]
 
-  constructor(database = dataSource) {
-    this.dataSource = database;
-  }
+  constructor() { }
 
   private hasSafrasPassadas(simulacao: ISimulacao) {
     const safrasPassadas = simulacao.feature.properties.safras_passadas
@@ -25,7 +21,7 @@ export class ProdutividadeService {
   private async getMediaIBGE5Anos(simulacao: ISimulacao) {
     try {
       const { municipio, cultura } = simulacao
-      let result = await new RedimentoMuncipioService().getRendimento5AnosByMunicipio(municipio, cultura)
+      let result = await new RendimentoMuncipioService().getRendimento5AnosByMunicipio(municipio, cultura)
       return result
     } catch (error: any) {
       throw new Error(`Get Media IBGE 5 Anos error: ${error.message}`)
@@ -46,7 +42,7 @@ export class ProdutividadeService {
 
         const cadByCentroid: any = await new PronasolosService().getCADByCentroid(cultura, centroid)
 
-        const rendimentoMunicipio = await new RedimentoMuncipioService().getRendimento10AnosByMunicipio(municipio, cultura, this.anosSafras)
+        const rendimentoMunicipio = await new RendimentoMuncipioService().getRendimento10AnosByMunicipio(municipio, cultura, this.anosSafras)
 
         // * calcular produtividade pela agritec (requisições assíncronas)
         const payload: IAgritecPayload = {

@@ -3,7 +3,7 @@ import { DataSource } from "typeorm";
 import { ICentroid } from "../ts";
 
 export class PronasolosService {
-    dataSource: DataSource;
+    private dataSource: DataSource;
 
     constructor(database = dataSource) {
         this.dataSource = database;

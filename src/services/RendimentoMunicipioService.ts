@@ -2,8 +2,8 @@ import { DataSource } from "typeorm";
 import dataSource from "../database";
 import { In } from 'typeorm';
 
-export class RedimentoMuncipioService {
-    dataSource: DataSource;
+export class RendimentoMuncipioService {
+    private dataSource: DataSource;
 
     constructor(database = dataSource) {
         this.dataSource = database;

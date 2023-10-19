@@ -4,7 +4,7 @@ import dataSource from "../database";
 import { IGeometry, ISimulacao } from "../ts";
 
 export class IntegridadeService {
-    dataSource: DataSource;
+    private dataSource: DataSource;
 
     constructor(database = dataSource) {
         this.dataSource = database;
