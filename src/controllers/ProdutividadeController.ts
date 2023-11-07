@@ -1,8 +1,7 @@
-import { Request, Response, response } from "express";
-
+import { Request, Response, NextFunction } from "express";
+import { BadRequestError } from "../errors";
 import { IFeature, ISimulacao } from "../ts";
 
-// TODO: ProdutividadeService
 import { ProdutividadeService } from "../services/ProdutividadeService";
 import { IntegridadeService } from "../services/IntegridadeService";
 
@@ -19,7 +18,7 @@ export class ProdutividadeController {
     }
 
     private mountResponseData(responses: any[]): any {
-        // console.log("Mount response data: ", responses)
+
         let responseData: any = {
             "produtividade": {}
         }
@@ -105,5 +104,46 @@ export class ProdutividadeController {
         } catch (error) {
             return response.status(400).send(String(error))
         }
+    }
+
+    public async calculateAllRefactor(request: Request, response: Response, next: NextFunction) {
+
+        const geojson = request.body
+
+        if (!Object.keys(geojson).length)
+            throw new BadRequestError({ code: 400, message: "Geojson is required!", logging: true })
+
+        if (!geojson.features || !geojson.features.length)
+            throw new BadRequestError({ code: 400, message: "Features is required!", logging: true })
+
+        const simulations = geojson.features.map((feat: IFeature) => {
+            return {
+                id: feat.id,
+                cultura: geojson.properties.cultura,
+                municipio: geojson.properties.cod_municipio,
+                feature: feat,
+                integridade: {
+                    isValidGeometry: true,
+                    validationMessage: undefined
+                }
+            }
+        })
+
+        // * INTEGRIDADE
+        const validatedSimulations = await Promise.all(simulations.map(async (simulation: ISimulacao) => {
+            return await this.integridadeService.validate(simulation)
+        }))
+
+        // * PRODUTIVIDADE
+        const responses = await Promise.all(validatedSimulations.map(async (simulation: ISimulacao) => {
+
+            if (simulation.integridade.isValidGeometry) return await this.produtividadeService.calculate(simulation)
+            else return {
+                [simulation.id]: simulation.integridade.validationMessage
+            }
+        }))
+
+        const responseData = this.mountResponseData(responses)
+        return response.status(200).send(responseData)
     }
 }

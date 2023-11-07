@@ -21,6 +21,7 @@ export class ProdutividadeService {
   private async getMediaIBGE5Anos(simulacao: ISimulacao) {
     try {
       const { municipio, cultura } = simulacao
+
       let result = await new RendimentoMuncipioService().getRendimento5AnosByMunicipio(municipio, cultura)
       return result
     } catch (error: any) {
