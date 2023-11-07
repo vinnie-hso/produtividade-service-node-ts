@@ -6,14 +6,16 @@ import { ISafraPassada } from "./ISafraPassada"
 import { ICentroid } from "./ICentroid"
 import { IAgritecPayload } from "./IAgritecPayload"
 import { IIntegridade } from "./IIntegridade"
+import { CustomErrorContent } from "./CustomErrorContent"
 
 export {
     ISimulacao,
     IFeature,
     IFeatureProperty,
     IGeometry,
-    ISafraPassada, 
+    ISafraPassada,
     ICentroid,
     IAgritecPayload,
-    IIntegridade
+    IIntegridade,
+    CustomErrorContent
 }

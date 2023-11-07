@@ -1,8 +1,10 @@
+import "express-async-errors"; 
 import express, { Express } from 'express';
 import cors from "cors";
 import dotenv from "dotenv";
 import "reflect-metadata";
 import routes from "./routes";
+import { errorHandler } from './middlewares';
 
 dotenv.config()
 
@@ -11,7 +13,6 @@ const app: Express = express()
 
 // * use json
 app.use(express.json());
-
 
 // * set headers
 app.use((request, response, next) => {
@@ -31,7 +32,11 @@ app.use(cors({
 })
 );
 
+// * routes
 app.use(routes);
+
+// * error handling
+app.use(errorHandler)
 
 // * app listen
 app.listen(PORT, () => console.log(`Serviço PreSeg - Produtividade rodando na porta ${PORT}`));
