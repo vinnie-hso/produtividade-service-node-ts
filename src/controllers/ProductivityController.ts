@@ -3,15 +3,15 @@ import { Request, Response, response } from "express";
 import { IFeature, ISimulacao } from "../ts";
 
 // TODO: ProdutividadeService
-import { ProdutividadeService } from "../services/ProdutividadeService";
+import { ProductivityService } from "../services/ProductivityService";
 import { IntegridadeService } from "../services/IntegridadeService";
 
 export class ProductivityController {
-    produtividadeService: ProdutividadeService;
+    produtividadeService: ProductivityService;
     integridadeService: IntegridadeService
 
     constructor(
-        produtividadeService = new ProdutividadeService(),
+        produtividadeService = new ProductivityService(),
         integridadeService = new IntegridadeService()
     ) {
         this.produtividadeService = produtividadeService;
