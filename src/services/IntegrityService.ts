@@ -1,7 +1,7 @@
 import { DataSource } from "typeorm";
 import dataSource from "../database";
 
-import { IGeometry, ISimulacao } from "../ts";
+import { IGeometry, ISimulation } from "../ts";
 
 export class IntegrityService {
     private dataSource: DataSource;
@@ -38,13 +38,13 @@ export class IntegrityService {
         }
     }
 
-    public async validate(simulation: ISimulacao) {
+    public async validate(simulation: ISimulation) {
 
         const geometry = simulation.feature.geometry
         const { invalid } = await this.getTopologicIntegrity(geometry)
         if (invalid) {
-            simulation.integridade.isValidGeometry = false
-            simulation.integridade.validationMessage = invalid
+            simulation.integrity.isValidGeometry = false
+            simulation.integrity.validationMessage = invalid
         }
         return simulation
     }

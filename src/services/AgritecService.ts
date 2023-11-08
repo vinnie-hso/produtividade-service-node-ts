@@ -39,7 +39,7 @@ export class AgritecService {
             const url = process.env.AGRITEC_URL
             const pastHarvests = payload.simulacao.feature.properties.safras_passadas
 
-            const requestsParams = pastHarvests.map((el) => {
+            const requestsParams = pastHarvests.map((el: any) => {
                 const expectation = payload.expectativaProdutividade
                     .find((e) => e.pam_rendmun_ano_safra === el.ano_safra)
 
@@ -47,7 +47,7 @@ export class AgritecService {
                     idCultura: this.getCultureCode(payload.cultura),
                     idCultivar: el.cultivar,
                     cad: Math.floor(payload.cad),
-                    codigoIBGE: payload.simulacao.municipio,
+                    codigoIBGE: payload.simulacao.county,
                     dataPlantio: el.data_plantio,
                     expectativaProdutividade: expectation.pam_rendmun_rend_ibge_max10anos,
                     latitude: payload.centroid.x,
@@ -55,7 +55,7 @@ export class AgritecService {
                 }
             })
 
-            const responses = await Promise.all(requestsParams.map(async (item) => {
+            const responses = await Promise.all(requestsParams.map(async (item: any) => {
                 this.config.params = item
                 let result = await axios.get(url, this.config)
                 const lastIdx = result.data.data.produtividadeAlmejada.length - 1

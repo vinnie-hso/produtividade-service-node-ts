@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { IFeature, ISimulacao } from "../ts";
+import { IFeature, ISimulation } from "../ts";
 import { ProductivityService } from "../services/ProductivityService";
 import { IntegrityService } from "../services/IntegrityService";
 
@@ -49,12 +49,12 @@ export class ProductivityController {
         if (!feature)
             return response.status(400).json({ message: 'Bad request: "feature" is required' })
 
-        const simulation: ISimulacao = {
+        const simulation: ISimulation = {
             id: request.headers['simulacao.id'],
-            cultura: request.headers['simulacao.cultura'],
-            municipio: request.headers['simulacao.municipio'],
+            culture: request.headers['simulacao.cultura'],
+            county: request.headers['simulacao.municipio'],
             feature: feature,
-            integridade: {
+            integrity: {
                 isValidGeometry: undefined,
                 validationMessage: undefined
             }
@@ -72,10 +72,10 @@ export class ProductivityController {
             const simulations = geojson.features.map((feat: IFeature) => {
                 return {
                     id: feat.id,
-                    cultura: geojson.properties.cultura,
-                    municipio: geojson.properties.cod_municipio,
+                    culture: geojson.properties.cultura,
+                    county: geojson.properties.cod_municipio,
                     feature: feat,
-                    integridade: {
+                    integrity: {
                         isValidGeometry: true,
                         validationMessage: undefined
                     }
@@ -83,16 +83,16 @@ export class ProductivityController {
             })
 
             // * INTEGRIDADE
-            const validatedSimulations = await Promise.all(simulations.map(async (simulation: ISimulacao) => {
+            const validatedSimulations = await Promise.all(simulations.map(async (simulation: ISimulation) => {
                 return await this.integrityService.validate(simulation)
             }))
 
             // * PRODUTIVIDADE
-            const responses = await Promise.all(validatedSimulations.map(async (simulation: ISimulacao) => {
+            const responses = await Promise.all(validatedSimulations.map(async (simulation: ISimulation) => {
 
-                if (simulation.integridade.isValidGeometry) return await this.productivityService.calculate(simulation)
+                if (simulation.integrity.isValidGeometry) return await this.productivityService.calculate(simulation)
                 else return {
-                    [simulation.id]: simulation.integridade.validationMessage
+                    [simulation.id]: simulation.integrity.validationMessage
                 }
             }))
 

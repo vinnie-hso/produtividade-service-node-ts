@@ -1,4 +1,4 @@
-import { ISimulacao } from "./ISimulacao"
+import { ISimulation } from "./ISimulation"
 import { IFeature } from "./IFeature"
 import { IFeatureProperty } from "./IFeatureProperty"
 import { IGeometry } from "./IGeometry"
@@ -9,7 +9,7 @@ import { IIntegridade } from "./IIntegridade"
 import { IAgritecConfig } from "./IAgritecConfig"
 
 export {
-    ISimulacao,
+    ISimulation,
     IFeature,
     IFeatureProperty,
     IGeometry,
