@@ -1,25 +1,21 @@
-import { Request, Response, response } from "express";
-
+import { Request, Response } from "express";
 import { IFeature, ISimulacao } from "../ts";
-
-// TODO: ProdutividadeService
 import { ProductivityService } from "../services/ProductivityService";
 import { IntegrityService } from "../services/IntegrityService";
 
 export class ProductivityController {
-    produtividadeService: ProductivityService;
-    integridadeService: IntegrityService
+    productivityService: ProductivityService;
+    integrityService: IntegrityService
 
     constructor(
-        produtividadeService = new ProductivityService(),
-        integridadeService = new IntegrityService()
+        productivityService = new ProductivityService(),
+        integrityService = new IntegrityService()
     ) {
-        this.produtividadeService = produtividadeService;
-        this.integridadeService = integridadeService
+        this.productivityService = productivityService;
+        this.integrityService = integrityService
     }
 
     private mountResponseData(responses: any[]): any {
-        // console.log("Mount response data: ", responses)
         let responseData: any = {
             "produtividade": {}
         }
@@ -53,7 +49,7 @@ export class ProductivityController {
         if (!feature)
             return response.status(400).json({ message: 'Bad request: "feature" is required' })
 
-        const simulacao: ISimulacao = {
+        const simulation: ISimulacao = {
             id: request.headers['simulacao.id'],
             cultura: request.headers['simulacao.cultura'],
             municipio: request.headers['simulacao.municipio'],
@@ -64,9 +60,9 @@ export class ProductivityController {
             }
         }
 
-        const produtividade = await this.produtividadeService.calculate(simulacao)
+        const productivity = await this.productivityService.calculate(simulation)
 
-        return response.status(200).send(produtividade)
+        return response.status(200).send(productivity)
     }
 
     public async calculateAll(request: Request, response: Response): Promise<Response> {
@@ -88,13 +84,13 @@ export class ProductivityController {
 
             // * INTEGRIDADE
             const validatedSimulations = await Promise.all(simulations.map(async (simulation: ISimulacao) => {
-                return await this.integridadeService.validate(simulation)
+                return await this.integrityService.validate(simulation)
             }))
 
             // * PRODUTIVIDADE
             const responses = await Promise.all(validatedSimulations.map(async (simulation: ISimulacao) => {
 
-                if (simulation.integridade.isValidGeometry) return await this.produtividadeService.calculate(simulation)
+                if (simulation.integridade.isValidGeometry) return await this.productivityService.calculate(simulation)
                 else return {
                     [simulation.id]: simulation.integridade.validationMessage
                 }
