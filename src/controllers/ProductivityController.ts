@@ -6,7 +6,7 @@ import { IFeature, ISimulacao } from "../ts";
 import { ProdutividadeService } from "../services/ProdutividadeService";
 import { IntegridadeService } from "../services/IntegridadeService";
 
-export class ProdutividadeController {
+export class ProductivityController {
     produtividadeService: ProdutividadeService;
     integridadeService: IntegridadeService
 
@@ -37,7 +37,7 @@ export class ProdutividadeController {
         return responseData
     }
 
-    public async calcular(request: Request, response: Response): Promise<Response> {
+    public async calculate(request: Request, response: Response): Promise<Response> {
 
         const feature: IFeature = request.body
 
