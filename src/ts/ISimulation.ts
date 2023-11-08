@@ -1,10 +1,10 @@
 import { IFeature } from "./IFeature";
-import { IIntegridade } from "./IIntegridade";
+import { IIntegrity } from "./IIntegrity";
 
 export interface ISimulation {
     id: any;
     culture: string | string[] | undefined;
     county: string | string[];
     feature: IFeature;
-    integrity: IIntegridade;
+    integrity: IIntegrity;
 }

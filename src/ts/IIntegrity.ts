@@ -1,4 +1,4 @@
-export interface IIntegridade {
+export interface IIntegrity {
     isValidGeometry?: boolean;
     validationMessage?: string;
 }

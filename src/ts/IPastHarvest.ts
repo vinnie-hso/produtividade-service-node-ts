@@ -1,4 +1,4 @@
-export interface ISafraPassada {
+export interface IPastHarvest {
     cultivar: string;
     data_plantio: string;
     data_colheita: string;

@@ -2,10 +2,10 @@ import { ISimulation } from "./ISimulation"
 import { IFeature } from "./IFeature"
 import { IFeatureProperty } from "./IFeatureProperty"
 import { IGeometry } from "./IGeometry"
-import { ISafraPassada } from "./ISafraPassada"
+import { IPastHarvest } from "./IPastHarvest"
 import { ICentroid } from "./ICentroid"
 import { IAgritecPayload } from "./IAgritecPayload"
-import { IIntegridade } from "./IIntegridade"
+import { IIntegrity } from "./IIntegrity"
 import { IAgritecConfig } from "./IAgritecConfig"
 
 export {
@@ -13,9 +13,9 @@ export {
     IFeature,
     IFeatureProperty,
     IGeometry,
-    ISafraPassada, 
+    IPastHarvest, 
     ICentroid,
     IAgritecPayload,
-    IIntegridade,
+    IIntegrity,
     IAgritecConfig
 }
