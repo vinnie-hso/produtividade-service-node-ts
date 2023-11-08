@@ -9,9 +9,9 @@ export class PronasolosService {
         this.dataSource = database;
     }
 
-    public async getCADByCentroid(cultura: any, centroid: ICentroid) {
+    public async getCADByCentroid(culture: any, centroid: ICentroid) {
         try {
-            const columnCad = this.getColumnCAD(cultura)
+            const columnCad = this.getColumnCAD(culture)
             const query = this.dataSource.getRepository("SoloPronasolos").createQueryBuilder()
                 .select(`SoloPronasolos.${columnCad}`, "cadValue")
                 .where(`ST_Intersects(ST_GeomFromText('POINT (${centroid.x} ${centroid.y})', 4326), spr_sp_pl)`)
@@ -23,10 +23,10 @@ export class PronasolosService {
         }
     }
 
-    private getColumnCAD(cultura: string) {
-        if (cultura === 'soja')
+    private getColumnCAD(culture: string) {
+        if (culture === 'soja')
             return 'spr_cad_soja'
-        else if (cultura === 'milho_1' || cultura === 'milho_2')
+        else if (culture === 'milho_1' || culture === 'milho_2')
             return 'spr_cad_milho'
     }
 }
