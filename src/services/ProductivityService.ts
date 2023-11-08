@@ -1,7 +1,7 @@
 import { ICentroid, IGeometry, ISimulacao, IAgritecPayload } from "../ts";
 import { GeometryUtils } from "../utils";
 import { PronasolosService } from "./PronasolosService";
-import { RendimentoMuncipioService } from "./RendimentoMunicipioService";
+import { MunicipalIncomeService } from "./MunicipalIncomeService";
 import { AgritecService } from "./AgritecService";
 
 export class ProductivityService {
@@ -20,7 +20,7 @@ export class ProductivityService {
   private async getIBGE5YearsAverage(simulation: ISimulacao) {
     try {
       const { municipio, cultura } = simulation
-      let result = await new RendimentoMuncipioService().getRendimento5AnosByMunicipio(municipio, cultura)
+      let result = await new MunicipalIncomeService().get5YearsIncomeByCounty(municipio, cultura)
       return result
     } catch (error: any) {
       throw new Error(`Get IBGE 5 Years Average error: ${error.message}`)
@@ -29,7 +29,7 @@ export class ProductivityService {
 
   private async getHistoricalProductivity(simulation: ISimulacao) {
     try {
-      // * calcular media IBGE se não houver safras passadas
+      // * calculate IBGE average if not past harvests
       let result
       if (!this.hasPastHarvests(simulation)) result = await this.getIBGE5YearsAverage(simulation)
       else {
@@ -41,9 +41,9 @@ export class ProductivityService {
 
         const cadByCentroid: any = await new PronasolosService().getCADByCentroid(cultura, centroid)
 
-        const municipalIncome = await new RendimentoMuncipioService().getRendimento10AnosByMunicipio(municipio, cultura, this.harvestYears)
+        const municipalIncome = await new MunicipalIncomeService().get10YearsIncomeByCounty(municipio, cultura, this.harvestYears)
 
-        // * calcular produtividade pela agritec (requisições assíncronas)
+        // * calculate productivity by Agritec (async requests)
         const payload: IAgritecPayload = {
           simulacao: simulation,
           cad: cadByCentroid.cadValue,

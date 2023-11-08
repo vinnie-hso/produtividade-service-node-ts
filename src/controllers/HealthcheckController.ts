@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { RendimentoMuncipioService } from "../services/RendimentoMunicipioService";
 
 export class HealthcheckController {
     constructor() { }
