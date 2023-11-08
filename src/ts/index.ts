@@ -6,6 +6,7 @@ import { ISafraPassada } from "./ISafraPassada"
 import { ICentroid } from "./ICentroid"
 import { IAgritecPayload } from "./IAgritecPayload"
 import { IIntegridade } from "./IIntegridade"
+import { IAgritecConfig } from "./IAgritecConfig"
 
 export {
     ISimulacao,
@@ -15,5 +16,6 @@ export {
     ISafraPassada, 
     ICentroid,
     IAgritecPayload,
-    IIntegridade
+    IIntegridade,
+    IAgritecConfig
 }

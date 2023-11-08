@@ -1,12 +1,12 @@
 const axios = require('axios')
-import { IAgritecPayload } from "../ts";
+import { IAgritecPayload, IAgritecConfig } from "../ts";
 
 export class AgritecService {
 
-    config
+    config: IAgritecConfig
 
     constructor(
-        config = {
+        config: IAgritecConfig = {
             headers: {
                 Authorization: `Bearer ${process.env.AGRITEC_API_KEY}`,
             },
@@ -16,12 +16,12 @@ export class AgritecService {
         this.config = config
     }
 
-    private getCulturaCode(cultura: any) {
-        if (cultura === "soja") return 60
-        if (cultura === "milho_1" || cultura === "milho_2") return 56
+    private getCultureCode(culture: any) {
+        if (culture === "soja") return 60
+        if (culture === "milho_1" || culture === "milho_2") return 56
     }
 
-    private calculateProdutividadeMedia(values: number[]) {
+    private calculateAverageProductivity(values: number[]) {
         if (values.length > 0 && values.length < 5) {
             const divisor = values.length
             return values.reduce((acc, curr) => acc + curr) / divisor
@@ -34,22 +34,22 @@ export class AgritecService {
         }
     }
 
-    public async getProdutividade(payload: IAgritecPayload) {
+    public async getProductivity(payload: IAgritecPayload) {
         try {
             const url = process.env.AGRITEC_URL
-            const safrasPassadas = payload.simulacao.feature.properties.safras_passadas
+            const pastHarvests = payload.simulacao.feature.properties.safras_passadas
 
-            const requestsParams = safrasPassadas.map((el) => {
-                const expectativa = payload.expectativaProdutividade
+            const requestsParams = pastHarvests.map((el) => {
+                const expectation = payload.expectativaProdutividade
                     .find((e) => e.pam_rendmun_ano_safra === el.ano_safra)
 
                 return {
-                    idCultura: this.getCulturaCode(payload.cultura),
+                    idCultura: this.getCultureCode(payload.cultura),
                     idCultivar: el.cultivar,
                     cad: Math.floor(payload.cad),
                     codigoIBGE: payload.simulacao.municipio,
                     dataPlantio: el.data_plantio,
-                    expectativaProdutividade: expectativa.pam_rendmun_rend_ibge_max10anos,
+                    expectativaProdutividade: expectation.pam_rendmun_rend_ibge_max10anos,
                     latitude: payload.centroid.x,
                     longitude: payload.centroid.y
                 }
@@ -59,14 +59,14 @@ export class AgritecService {
                 this.config.params = item
                 let result = await axios.get(url, this.config)
                 const lastIdx = result.data.data.produtividadeAlmejada.length - 1
-                const produtividade = result.data.data.produtividadeAlmejada[lastIdx]
-                return produtividade
+                const productivity = result.data.data.produtividadeAlmejada[lastIdx]
+                return productivity
             }))
 
-            const produtividadeMedia = this.calculateProdutividadeMedia(responses)
-            return produtividadeMedia
+            const averageProductivity = this.calculateAverageProductivity(responses)
+            return averageProductivity
         } catch (error: any) {
-            throw new Error(`Get Produtividade Agritec error: ${error.message}`)
+            throw new Error(`Get Agritec Productivity error: ${error.message}`)
         }
     }
 

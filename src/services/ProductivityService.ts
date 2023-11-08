@@ -52,7 +52,7 @@ export class ProductivityService {
           expectativaProdutividade: municipalIncome,
         }
 
-        result = await new AgritecService().getProdutividade(payload)
+        result = await new AgritecService().getProductivity(payload)
       }
 
       return {
