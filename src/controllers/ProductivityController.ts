@@ -4,15 +4,15 @@ import { IFeature, ISimulacao } from "../ts";
 
 // TODO: ProdutividadeService
 import { ProductivityService } from "../services/ProductivityService";
-import { IntegridadeService } from "../services/IntegridadeService";
+import { IntegrityService } from "../services/IntegrityService";
 
 export class ProductivityController {
     produtividadeService: ProductivityService;
-    integridadeService: IntegridadeService
+    integridadeService: IntegrityService
 
     constructor(
         produtividadeService = new ProductivityService(),
-        integridadeService = new IntegridadeService()
+        integridadeService = new IntegrityService()
     ) {
         this.produtividadeService = produtividadeService;
         this.integridadeService = integridadeService

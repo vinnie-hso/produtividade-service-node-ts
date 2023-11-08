@@ -3,7 +3,7 @@ import dataSource from "../database";
 
 import { IGeometry, ISimulacao } from "../ts";
 
-export class IntegridadeService {
+export class IntegrityService {
     private dataSource: DataSource;
 
     constructor(database = dataSource) {
