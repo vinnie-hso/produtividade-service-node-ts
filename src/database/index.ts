@@ -17,13 +17,4 @@ const dataSource: DataSource = new DataSource({
   maxQueryExecutionTime: 2000, // 2 seg.
 });
 
-dataSource
-  .initialize()
-  .then(() => {
-    console.log("Data Source inicializado");
-  })
-  .catch((e) => {
-    console.error("Erro na inicialização do Data Source:", e);
-  });
-
 export default dataSource;

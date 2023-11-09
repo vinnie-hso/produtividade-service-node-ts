@@ -3,11 +3,22 @@ import cors from "cors";
 import dotenv from "dotenv";
 import "reflect-metadata";
 import routes from "./routes";
+import dataSource from './database';
 
 dotenv.config()
 
 const PORT = process.env.PORT || 5000
 const app: Express = express()
+
+// * initialize datasource
+dataSource
+  .initialize()
+  .then(() => {
+    console.log("Data Source inicializado");
+  })
+  .catch((e) => {
+    console.error("Erro na inicialização do Data Source:", e);
+  });
 
 // * use json
 app.use(express.json());
