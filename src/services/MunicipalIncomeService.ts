@@ -1,15 +1,16 @@
 import { DataSource } from "typeorm";
 import dataSource from "../database";
 import { In } from 'typeorm';
+import { IMunicipalIncomeService } from '../ts'
 
-export class MunicipalIncomeService {
+export class MunicipalIncomeService implements IMunicipalIncomeService {
     private dataSource: DataSource;
 
-    constructor(database = dataSource) {
+    constructor(database: DataSource = dataSource) {
         this.dataSource = database;
     }
 
-    public async get5YearsIncomeByCounty(county: any, culture: any) {
+    async get5YearsIncomeByCounty(county: any, culture: any) {
         try {
             let result
             if (culture === 'soja') result = await this.get5YearsSoyIncome(county, culture)
@@ -27,7 +28,7 @@ export class MunicipalIncomeService {
         }
     }
 
-    private async get5YearsCornIncome(county: string, culture: string) {
+    async get5YearsCornIncome(county: string, culture: string) {
         const query = this.dataSource.getRepository('MunicipioPam')
             .createQueryBuilder('tb_municipio_pam')
             .select(['pam_rendmun_ano_safra', 'pam_rendmun_rend_ibge'])
@@ -45,7 +46,7 @@ export class MunicipalIncomeService {
         return result;
     }
 
-    private async get5YearsSoyIncome(county: string, culture: string) {
+    async get5YearsSoyIncome(county: string, culture: string) {
         const query = this.dataSource.getRepository('MunicipioPam')
             .createQueryBuilder('tb_municipio_pam')
             .select(['pam_rendmun_ano_safra', 'pam_rendmun_rend_ibge'])
@@ -58,7 +59,7 @@ export class MunicipalIncomeService {
         return result;
     }
 
-    public async get10YearsIncomeByCounty(county: any, culture: any, harvestYears: string[]) {
+    async get10YearsIncomeByCounty(county: any, culture: any, harvestYears: string[]) {
         try {
             let result
             if (culture === 'soja') result = await this.get10YearsSoyIncome(county, culture, harvestYears)
@@ -69,7 +70,7 @@ export class MunicipalIncomeService {
         }
     }
 
-    private async get10YearsSoyIncome(county: string, culture: string, harvestYears: string[]) {
+    async get10YearsSoyIncome(county: string, culture: string, harvestYears: string[]) {
         const query = this.dataSource.getRepository('MunicipioPam')
             .createQueryBuilder('tb_municipio_pam')
             .select(['pam_rendmun_rend_ibge_max10anos', 'pam_rendmun_ano_safra'])
@@ -84,7 +85,7 @@ export class MunicipalIncomeService {
         return result
     }
 
-    private async get10YearsCornIncome(county: string, culture: string, harvestYears: string[]) {
+    async get10YearsCornIncome(county: string, culture: string, harvestYears: string[]) {
         const query = this.dataSource.getRepository('MunicipioPam')
             .createQueryBuilder('tb_municipio_pam')
             .select(['pam_rendmun_rend_ibge_max10anos', 'pam_rendmun_ano_safra'])

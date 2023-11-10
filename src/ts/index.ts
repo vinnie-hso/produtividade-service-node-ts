@@ -8,6 +8,10 @@ import { IAgritecPayload } from "./IAgritecPayload"
 import { IIntegrity } from "./IIntegrity"
 import { IAgritecConfig } from "./IAgritecConfig"
 
+import { IProductivityService } from "./IProductivityService"
+import { IIntegrityService } from "./IIntegrityService"
+import { IMunicipalIncomeService } from "./IMunicipalIncomeService"
+
 export {
     ISimulation,
     IFeature,
@@ -17,5 +21,8 @@ export {
     ICentroid,
     IAgritecPayload,
     IIntegrity,
-    IAgritecConfig
+    IAgritecConfig,
+    IProductivityService,
+    IIntegrityService,
+    IMunicipalIncomeService
 }

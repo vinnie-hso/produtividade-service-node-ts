@@ -5,7 +5,7 @@ import { ICentroid } from "../ts";
 export class PronasolosService {
     private dataSource: DataSource;
 
-    constructor(database = dataSource) {
+    constructor(database: DataSource = dataSource) {
         this.dataSource = database;
     }
 

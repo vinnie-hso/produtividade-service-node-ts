@@ -16,12 +16,12 @@ export class AgritecService {
         this.config = config
     }
 
-    private getCultureCode(culture: any) {
+    getCultureCode(culture: any) {
         if (culture === "soja") return 60
         if (culture === "milho_1" || culture === "milho_2") return 56
     }
 
-    private calculateAverageProductivity(values: number[]) {
+    calculateAverageProductivity(values: number[]) {
         if (values.length > 0 && values.length < 5) {
             const divisor = values.length
             return values.reduce((acc, curr) => acc + curr) / divisor
@@ -34,7 +34,7 @@ export class AgritecService {
         }
     }
 
-    public async getProductivity(payload: IAgritecPayload) {
+    async getProductivity(payload: IAgritecPayload) {
         try {
             const url = process.env.AGRITEC_URL
             const pastHarvests = payload.simulacao.feature.properties.safras_passadas
