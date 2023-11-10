@@ -1,17 +1,16 @@
 import { DataSource } from "typeorm";
 import dataSource from "../database";
 
-import { IGeometry, ISimulation } from "../ts";
+import { IGeometry, ISimulation, IIntegrityService } from "../ts";
 
-export class IntegrityService {
+export class IntegrityService implements IIntegrityService {
     private dataSource: DataSource;
 
-    constructor(database = dataSource) {
+    constructor(database: DataSource = dataSource) {
         this.dataSource = database;
     }
 
-    // * 1. get area
-    private async getArea(geometry: IGeometry) {
+    async getArea(geometry: IGeometry) {
         try {
             const shape = JSON.stringify(geometry);
             const queryRunner = this.dataSource.createQueryRunner()
@@ -24,8 +23,7 @@ export class IntegrityService {
         }
     }
 
-    // * 2. get integridade topológica
-    private async getTopologicIntegrity(geometry: IGeometry) {
+    async getTopologicIntegrity(geometry: IGeometry) {
         try {
             const shape = JSON.stringify(geometry);
             const queryRunner = this.dataSource.createQueryRunner()
@@ -38,7 +36,7 @@ export class IntegrityService {
         }
     }
 
-    public async validate(simulation: ISimulation) {
+    async validate(simulation: ISimulation) {
 
         const geometry = simulation.feature.geometry
         const { invalid } = await this.getTopologicIntegrity(geometry)

@@ -1,33 +1,40 @@
-import { ICentroid, IGeometry, ISimulation, IAgritecPayload } from "../ts";
+import { ICentroid, IGeometry, ISimulation, IAgritecPayload, IProductivityService, IMunicipalIncomeService } from "../ts";
 import { GeometryUtils } from "../utils";
 import { PronasolosService } from "./PronasolosService";
 import { MunicipalIncomeService } from "./MunicipalIncomeService";
 import { AgritecService } from "./AgritecService";
 
-export class ProductivityService {
-  simulation: ISimulation
+export class ProductivityService implements IProductivityService {
+
   harvestYears: string[]
+  municipalIncomeService: IMunicipalIncomeService
 
-  constructor() { }
+  constructor(
+    municipalIncomeService: IMunicipalIncomeService = new MunicipalIncomeService()
+  ) {
+    this.municipalIncomeService = municipalIncomeService
+  }
 
-  private hasPastHarvests(simulation: ISimulation) {
+  hasPastHarvests(simulation: ISimulation) {
     const harvestYears = simulation.feature.properties.safras_passadas
     if (!harvestYears) return false
     if (harvestYears.length > 0) this.harvestYears = harvestYears.map((el: any) => el.ano_safra)
     return harvestYears.length > 0
   }
 
-  private async getIBGE5YearsAverage(simulation: ISimulation) {
+  async getIBGE5YearsAverage(simulation: ISimulation) {
     try {
       const { county, culture } = simulation
-      let result = await new MunicipalIncomeService().get5YearsIncomeByCounty(county, culture)
+      
+      let result = await this.municipalIncomeService.get5YearsIncomeByCounty(county, culture)
+      
       return result
     } catch (error: any) {
       throw new Error(`Get IBGE 5 Years Average error: ${error.message}`)
     }
   }
 
-  private async getHistoricalProductivity(simulation: ISimulation) {
+  async getHistoricalProductivity(simulation: ISimulation) {
     try {
       // * calculate IBGE average if not past harvests
       let result

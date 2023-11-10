@@ -1,15 +1,16 @@
 import { Request, Response } from "express";
-import { IFeature, ISimulation } from "../ts";
+import { IFeature, ISimulation, IProductivityService, IIntegrityService } from "../ts";
 import { ProductivityService } from "../services/ProductivityService";
 import { IntegrityService } from "../services/IntegrityService";
 
 export class ProductivityController {
-    productivityService: ProductivityService;
-    integrityService: IntegrityService
+
+    productivityService: IProductivityService
+    integrityService: IIntegrityService
 
     constructor(
-        productivityService = new ProductivityService(),
-        integrityService = new IntegrityService()
+        productivityService: IProductivityService = new ProductivityService(),
+        integrityService: IIntegrityService = new IntegrityService()
     ) {
         this.productivityService = productivityService;
         this.integrityService = integrityService

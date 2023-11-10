@@ -1,4 +1,4 @@
 export interface IGeometry {
     type: string;
-    coordinates: []
+    coordinates: Array<Array<any>>
 }
